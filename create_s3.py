@@ -5,6 +5,8 @@
 import boto3
 from botocore.exceptions import ClientError
 import json
+# filepath: c:\Users\rolle\OneDrive\Documents\GitHub\boto3+s3Automation\create_s3.py
+from variables import BUCKET_NAME, BUCKET2_NAME, AWS_REGION
 
 def create_bucket(bucket_name, region=None):
     """
@@ -62,8 +64,8 @@ def create_bucket(bucket_name, region=None):
 
 # The create_bucket function is now modular and can be imported and used in other scripts.
 # Example usage (uncomment to use as a script):
-#
-# if __name__ == "__main__":
-#     region = 'us-west-2'
-#     bucket_name = 'student-lev-bucket'
-#     create_bucket(bucket_name, region)
+if __name__ == "__main__":
+    # Create the main bucket
+    create_bucket(BUCKET_NAME, AWS_REGION)
+    # Create the backup bucket
+    create_bucket(BUCKET2_NAME, AWS_REGION)

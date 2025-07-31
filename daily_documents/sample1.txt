@@ -1,0 +1,3 @@
+lab 177 text file 
+added for the function to run a word count 
+of this input .
