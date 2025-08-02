@@ -11,18 +11,27 @@ from variables import BUCKET_NAME, BUCKET2_NAME, AWS_REGION
 def create_bucket(bucket_name, region=None):
     """
     Create an S3 bucket in a specified region using boto3 client.
-    If no region is specified, the default AWS region is used.
-    After creation, applies a public policy for read, write, and delete.
+    If the bucket already exists, skip creation.
     """
     try:
         # Create S3 client
+        s3_client = boto3.client('s3', region_name=region) if region else boto3.client('s3')
+
+        # Check if the bucket already exists
+        try:
+            s3_client.head_bucket(Bucket=bucket_name)
+            print(f"Bucket '{bucket_name}' already exists. Skipping creation.")
+            return
+        except ClientError as e:
+            error_code = int(e.response['Error']['Code'])
+            if error_code != 404:
+                print(f"Error checking bucket existence: {e}")
+                return
+
+        # Create bucket if it does not exist
         if region is None:
-            s3_client = boto3.client('s3')
-            # Create bucket with default region
             s3_client.create_bucket(Bucket=bucket_name)
         else:
-            s3_client = boto3.client('s3', region_name=region)
-            # Specify region in bucket configuration
             location = {'LocationConstraint': region}
             s3_client.create_bucket(Bucket=bucket_name, CreateBucketConfiguration=location)
 
